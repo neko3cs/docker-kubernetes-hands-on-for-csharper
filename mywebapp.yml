@@ -1,0 +1,37 @@
+apiVersion: apps/v1 
+kind: Deployment
+metadata:
+  name: mywebapp-deployment
+spec:
+  selector:
+    matchLabels:
+      app: mywebapp
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mywebapp
+    spec:
+      containers:
+      - name: mywebapp
+        image: mywebapp:latest
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: mywebapp
+  name: mywebapp
+spec:
+  ports:
+  - nodePort: 32565
+    port: 18081
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: mywebapp
+  sessionAffinity: None
+  type: NodePort
